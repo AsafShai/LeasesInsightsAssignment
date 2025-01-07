@@ -5,20 +5,18 @@ The current insights are Expiring leases and extreme vacancy.
 
 ## Setup
 
+Setup Using Docker:
 ```bash
-
-# Setup Using Docker:
 docker build -t leases_insights .
 docker run -p 3000:3000 leases_insights
 ```
 
 # API Documentation
 ### Uplodad CSV File
-POST /api/upload
-Content-Type: multipart/form-data
+POST: localhost:3000/api/upload
 
 ### GET Expiring Leases
-GET /api/insights/expiring-leases
+GET: localhost:3000/api/insights/expiring-leases
 
 Example Response:
 ```
@@ -39,7 +37,7 @@ Example Response:
 ```
 
 ### GET Extreme Vacancy
-GET /api/insights/extreme-vacancy
+GET: localhost:3000/api/insights/extreme-vacancy
 
 Example Response:
 ```
@@ -54,6 +52,20 @@ Example Response:
     }
 ]
 ```
+
+## Architecture
+
+The project follows MVC (Model-View-Controller) pattern and layered architecture:
+
+### Structure
+- **Controllers** (`controllers/`): Handle API requests/responses
+- **Routes** (`routes/`): Define API endpoints
+- **Services** (`services/`): Core business logic for insights and data processing
+- **Utils** (`util/`): Shared helpers for CSV operations and error handling
+
+Each insight has its own route.
+
+The modular design allows easy addition of new features while maintaining separation of concerns.
 
 
 
