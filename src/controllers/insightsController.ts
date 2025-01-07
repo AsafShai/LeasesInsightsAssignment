@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { InsightsService } from "../services/insightsService";
-import { ErrorReadingFile } from "../customErrors/ErrorReadingFile";
+import { CustomError } from "../util/customError";
+// import { ErrorReadingFile } from "../customErrors/ErrorReadingFile";
 
 export class InsightsController {
     constructor(private readonly insightsService: InsightsService) {
@@ -29,9 +30,10 @@ export class InsightsController {
                 await this.insightsService.getExtremeVacancy();
             res.status(200).json(extremeVacancy);
         } catch (error) {
-            if (error instanceof ErrorReadingFile) {
+            if (error instanceof CustomError) {
                 res.status(error.statusCode).json({ error: error.message });
-            } else if (error instanceof Error) {
+            }
+            else if (error instanceof Error) {
                 res.status(500).json({ error: error.message });
             } else {
                 res.status(500).json({ error: "An unknown error occurred" });

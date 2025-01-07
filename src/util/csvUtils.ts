@@ -2,7 +2,7 @@ import { ZodSchema } from "zod";
 import fs from "fs";
 import Papa from "papaparse";
 import _ from "lodash";
-import { ErrorReadingFile } from "../customErrors/ErrorReadingFile";
+import { CustomError } from "./customError";
 
 export class CsvUtils {
     public static readFile<T>(
@@ -11,7 +11,7 @@ export class CsvUtils {
     ): Promise<T[]> {
         return new Promise((resolve, reject) => {
             if (!fs.existsSync(filePath)) {
-                reject(new ErrorReadingFile("File not found", 404));
+                reject(new CustomError("File not found", 404));
                 return;
             }
             const data: T[] = [];
@@ -34,7 +34,7 @@ export class CsvUtils {
                     resolve(data);
                 },
                 error: (error: any) => {
-                    reject(new ErrorReadingFile(error.message, 400));
+                    reject(new CustomError(error.message, 400));
                 },
             });
         });
