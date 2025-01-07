@@ -18,6 +18,24 @@ POST: localhost:3000/api/upload
 ### GET Expiring Leases
 GET: localhost:3000/api/insights/expiring-leases
 
+Returns properties with expiring leases in next 30 days.
+```typescript
+[
+   {
+       property_id: number,
+       expiring_leases: [
+           {
+               lease_id: number,
+               unit_id: number, 
+               tenant_id: number,
+               start_date: string,
+               end_date: string
+           }
+       ]
+   }
+]
+```
+
 Example Response:
 ```
 [
@@ -38,6 +56,22 @@ Example Response:
 
 ### GET Extreme Vacancy
 GET: localhost:3000/api/insights/extreme-vacancy
+
+Returns top 5 units with longest vacancy periods.
+```typescript
+{
+    units: [
+        {
+            unit_id: number,
+            vacancy_days: number,
+            property_id: number,
+            unit_number: string,
+            size: number,
+            type: string
+        }
+    ]
+}
+```
 
 Example Response:
 ```
