@@ -24,9 +24,9 @@ export class CsvUtils {
                         data.push(parsedRow.data);
                     } else {
                         console.error(
-                            `Row parsing failed: ${
-                                parsedRow.error
-                            }, Row: ${JSON.stringify(row.data)}`
+                            `Row parsing failed on row ${JSON.stringify(
+                                row.data
+                            )}. Error: ${parsedRow.error}`
                         );
                     }
                 },
@@ -46,14 +46,18 @@ export class CsvUtils {
         key1: K1,
         key2: K2
     ): (T & U)[] {
-        const map1 = _.keyBy(object1, key1 as string);
-        const map2 = _.keyBy(object2, key2 as string);
+        const lookup = new Map<T[K1], U>();
 
-        return _.values(map1)
-            .filter((val: T) => map2[val[key1] as string])
-            .map((obj1: T) => ({
-                ...obj1,
-                ...map2[obj1[key1] as string],
-            }));
+        object2.forEach((item) => {
+            lookup.set(item[key2] as unknown as T[K1], item);
+        });
+
+        return object1.map((item1) => {
+            const item2 = lookup.get(item1[key1]) as U;
+            return {
+                ...item1,
+                ...item2,
+            };
+        });
     }
 }

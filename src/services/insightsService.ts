@@ -1,5 +1,11 @@
 import { CsvUtils } from "../util/csvUtils";
-import { Lease, Property, Unit, UnitWithVacancy } from "../util/types";
+import {
+    ExpiringLeasesReturnType,
+    Lease,
+    Property,
+    Unit,
+    UnitWithVacancy,
+} from "../util/types";
 import { CsvService } from "./csvService";
 import _, { Dictionary } from "lodash";
 
@@ -12,7 +18,7 @@ export class InsightsService {
         this.filesService = filesService;
     }
 
-    public async getExpiringLeases(): Promise<(Lease & Unit & Property)[]> {
+    public async getExpiringLeases(): Promise<ExpiringLeasesReturnType[]> {
         const leases = await this.getExpiringLeasesNext30Days();
         const units = await this.filesService.getUnits();
         const properties = await this.filesService.getProperties();
@@ -29,7 +35,25 @@ export class InsightsService {
                 "property_id",
                 "property_id"
             );
-        return joinedLeasesAndProperties;
+        const groupedByPropertyId = _.groupBy(
+            joinedLeasesAndProperties,
+            "property_id"
+        );
+        const propertiesToLease = _(groupedByPropertyId)
+            .map((leases, property_id) => ({
+                property_id: parseInt(property_id),
+                expiring_leases: leases.map((lease) =>
+                    _.pick(lease, [
+                        "lease_id",
+                        "unit_id",
+                        "tenant_id",
+                        "start_date",
+                        "end_date",
+                    ])
+                ),
+            }))
+            .value();
+        return propertiesToLease;
     }
 
     private async getExpiringLeasesNext30Days(): Promise<Lease[]> {
@@ -38,7 +62,7 @@ export class InsightsService {
         return _.filter(leases, (lease: Lease) => {
             const endDate = new Date(lease.end_date);
             const difference = endDate.getTime() - now.getTime();
-            return difference <= this.THIRTY_DAYS;
+            return difference <= this.THIRTY_DAYS && difference >= 0;
         });
     }
 

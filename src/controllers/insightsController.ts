@@ -6,21 +6,6 @@ export class InsightsController {
     constructor(private readonly insightsService: InsightsService) {
         this.insightsService = insightsService;
     }
-    // public getInsights = async (req: Request, res: Response): Promise<void> => {
-    //     try {
-    //         //TODO: handle errors on missing files
-    //         const expiringLeases =
-    //             await this.insightsService.getExpiringLeases();
-    //         const extremeVacancy =
-    //             await this.insightsService.getExtremeVacancy();
-    //         res.status(200).json({
-    //             expiringLeases,
-    //             extremeVacancy,
-    //         });
-    //     } catch (error) {
-    //         res.status(500).json({ error: "Error fetching insights" });
-    //     }
-    // };
 
     public getExpiringLeases = async (
         req: Request,

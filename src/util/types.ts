@@ -33,7 +33,8 @@ export type UnitWithVacancy = {
     vacancy_days: number;
  };
 
-export type InsightsReturnType = {
-    expiringLeases: (Lease & Unit & Property)[];
-    extremeVacancy: UnitWithVacancy[];
- };
+
+export type ExpiringLeasesReturnType = {
+    property_id: number;
+    expiring_leases: Lease[]
+}
